@@ -1,0 +1,44 @@
+---
+type Props = {
+  pokemon: {
+    name: string;
+    url: string;
+  };
+  isBig?: boolean;
+};
+const { pokemon, isBig = false } = Astro.props;
+const res = await fetch(pokemon.url);
+const data = (await res.json()).sprites.other["official-artwork"];
+const imageUrl = data.front_default;
+const id = pokemon.url.split("/").at(-2);
+---
+
+<a
+  href=`/pokemons/${pokemon.name}`
+  class:list={[
+    "rounded-lg flex flex-col justify-center items-center p-3",
+    {
+      border: !isBig,
+    },
+  ]}
+>
+  <img
+    src={imageUrl}
+    alt="Pokemon image"
+    transition:name=`${pokemon.name}-image`
+    class:list={[
+      {
+        "size-16": !isBig,
+        "size-26": isBig,
+      },
+    ]}
+  />
+  <span
+    class:list={[
+      " capitalize",
+      {
+        "text-4xl": isBig,
+      },
+    ]}>#{id} {pokemon.name}</span
+  >
+</a>
